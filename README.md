@@ -1,7 +1,7 @@
 Sudoku Camera
 =============
 
-Sudoku Camera is an experimantal project combining webcam sudoku C++
+Sudoku Camera is an experimental project combining webcam sudoku C++
 code from the
 [Webcam Sudoku](http://www.codeproject.com/Articles/238114/Realtime-Webcam-Sudoku-Solver)
 project and android camera Java code from the
