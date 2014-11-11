@@ -1,11 +1,37 @@
-
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Sudoku - An Android Sudoku library.
+//
+//  Copyright (C) 2014	Bill Farmer
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  Bill Farmer	 william j farmer [at] yahoo [dot] co [dot] uk.
+//
+///////////////////////////////////////////////////////////////////////////////
 
 #include "Sudoku.h"
+
+// Global pointer to Sudoku object
 
 Sudoku *sudoku;
 
 //////////////////////////////////////////////////////////////////////////
-// init()
+// Function:	init()
+// Purpose:	Create Sudoku object
+//
+//////////////////////////////////////////////////////////////////////////
 void
 Java_org_billthefarmer_sudoku_Sudoku_init(JNIEnv *env,
 					  jobject obj)
@@ -66,7 +92,8 @@ Java_org_billthefarmer_sudoku_Sudoku_getAngle(JNIEnv *env,
 // Function:	getRect()
 // Purpose:	Get the four corners of the puzzle as a int array. This is
 //		possibly the easiest way to pass the data back as using
-//		points or two dimensional arrays involves Java objects
+//		points or two dimensional arrays involves multiple Java
+//		objects
 // Parameters:	jrect - Java int array to fill in
 //
 // Returns:	true if successful, false otherwise
@@ -196,9 +223,11 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 		    sud.GetRect(rect);
 		    ocrValid = sud.OCR();
                     if (ocrValid)
+		    {
                         sud.Solve();
+			sud.DisplaySolution();
+		    }
 		}
-            sud.DisplaySolution();
             break;
         }
         case 32:
@@ -213,9 +242,11 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 		    sud.GetRect(rect);
 		    ocrValid = sud.OCR();
                     if (ocrValid)
+		    {
                         sud.Solve();
+			sud.DisplaySolution();
+		    }
 		}
-            sud.DisplaySolution();
             break;
         }
         default:
