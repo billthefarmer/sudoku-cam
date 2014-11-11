@@ -1086,8 +1086,8 @@ BOOL SudBitmap::DetectRect(int theta)
 void SudBitmap::GetRect(POINT rect[])
 {
     rect[0] = m_grid[0][0];
-    rect[1] = m_grid[0][9];
-    rect[2] = m_grid[9][0];
+    rect[1] = m_grid[9][0];
+    rect[2] = m_grid[0][9];
     rect[3] = m_grid[9][9];
 }
 

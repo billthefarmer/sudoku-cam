@@ -120,6 +120,8 @@ public class CameraPreview extends SurfaceView
 	params.gravity = Gravity.CENTER_VERTICAL;
         setLayoutParams(params);
 
+	thread.view.setLayoutParams(params);
+
         // start preview with new settings
         try
         {

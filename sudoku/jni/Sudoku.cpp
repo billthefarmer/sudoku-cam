@@ -181,7 +181,7 @@ Sudoku::Sudoku()
     display.whiteArea = FALSE;
     display.lineDetect = FALSE;
     display.grid = TRUE;
-    display.OCRresult = FALSE;
+    display.OCRresult = TRUE;
     display.tempSolution = FALSE;
     display.finalSolution = FALSE;
     display.smallFont = FALSE;

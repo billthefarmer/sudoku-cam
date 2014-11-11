@@ -28,9 +28,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Camera;
-import android.view.Gravity;
+// import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
+// import android.widget.FrameLayout;
 
 public class PuzzleView extends View
 {
@@ -60,14 +60,14 @@ public class PuzzleView extends View
 	paint = new Paint();
     }
 
-    public void setAspect(Camera.Size size)
-    {
-	FrameLayout.LayoutParams params =
-	    (FrameLayout.LayoutParams) getLayoutParams();
-	params.height = width * size.width / size.height; // portrait mode only
-	params.gravity = Gravity.CENTER_VERTICAL;
-	setLayoutParams(params);
-    }
+    // public void setAspect(Camera.Size size)
+    // {
+    // 	FrameLayout.LayoutParams params =
+    // 	    (FrameLayout.LayoutParams) getLayoutParams();
+    // 	params.height = width * size.width / size.height; // portrait mode only
+    // 	params.gravity = Gravity.CENTER_VERTICAL;
+    // 	setLayoutParams(params);
+    // }
 
     public void setData(int angle, boolean detected, boolean valid,
 			int[][] rect, int[][]puzzle, byte[] pixels,
@@ -97,7 +97,7 @@ public class PuzzleView extends View
     {
 	paint.setColor(Color.GREEN);
 	paint.setStyle(Paint.Style.STROKE);
-	paint.setStrokeWidth(5);
+	paint.setStrokeWidth(3);
 
 	int offset = (width - imageHeight) / 2;
 
@@ -105,17 +105,17 @@ public class PuzzleView extends View
 	    canvas.drawBitmap(colours, 0, imageHeight, offset, 0,
 			      imageHeight, imageWidth, false, null);
 
-	canvas.translate(0, height / 4);
+	// canvas.translate(0, height / 4);
 
 	if (detected)
 	{
 	    canvas.drawLine(rect[0][0], rect[0][1],
 			    rect[1][0], rect[1][1], paint);
 	    canvas.drawLine(rect[1][0], rect[1][1],
-			    rect[3][0], rect[3][1], paint);
-	    canvas.drawLine(rect[3][0], rect[3][1],
 			    rect[2][0], rect[2][1], paint);
 	    canvas.drawLine(rect[2][0], rect[2][1],
+			    rect[3][0], rect[3][1], paint);
+	    canvas.drawLine(rect[3][0], rect[3][1],
 			    rect[0][0], rect[0][1], paint);
 	}
     }
