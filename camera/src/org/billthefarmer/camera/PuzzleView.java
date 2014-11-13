@@ -24,13 +24,12 @@
 package org.billthefarmer.camera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Camera;
-// import android.view.Gravity;
 import android.view.View;
-// import android.widget.FrameLayout;
 
 public class PuzzleView extends View
 {
@@ -39,8 +38,7 @@ public class PuzzleView extends View
     private int width;
     private int height;
 
-    private int imageWidth;
-    private int imageHeight;
+    private int resolution;
 
     private int angle;
 
@@ -49,7 +47,7 @@ public class PuzzleView extends View
 
     private int[][] rect;
     private int[][] puzzle;
-    private byte[] pixels;
+    private Bitmap bitmap;
 
     private int[] colours;
 
@@ -60,30 +58,16 @@ public class PuzzleView extends View
 	paint = new Paint();
     }
 
-    // public void setAspect(Camera.Size size)
-    // {
-    // 	FrameLayout.LayoutParams params =
-    // 	    (FrameLayout.LayoutParams) getLayoutParams();
-    // 	params.height = width * size.width / size.height; // portrait mode only
-    // 	params.gravity = Gravity.CENTER_VERTICAL;
-    // 	setLayoutParams(params);
-    // }
-
     public void setData(int angle, boolean detected, boolean valid,
-			int[][] rect, int[][]puzzle, byte[] pixels,
-			int width, int height)
+			int[][] rect, int[][] puzzle, Bitmap bitmap)
     {
 	this.angle = angle;
 	this.detected = detected;
 	this.valid = valid;
 	this.rect = rect;
 	this.puzzle = puzzle;
-	this.pixels = pixels;
-	imageWidth = width;
-	imageHeight = height;
-
-	makeColours(pixels, width, height);
-    }
+	this.bitmap = bitmap;
+   }
 
     @Override
     public void onSizeChanged(int w, int h, int oldw, int oldh)
@@ -99,38 +83,11 @@ public class PuzzleView extends View
 	paint.setStyle(Paint.Style.STROKE);
 	paint.setStrokeWidth(3);
 
-	int offset = (width - imageHeight) / 2;
+	if (bitmap != null)
 
-	if (colours != null)
-	    canvas.drawBitmap(colours, 0, imageHeight, offset, 0,
-			      imageHeight, imageWidth, false, null);
-
-	// canvas.translate(0, height / 4);
-
-	if (detected)
 	{
-	    canvas.drawLine(rect[0][0], rect[0][1],
-			    rect[1][0], rect[1][1], paint);
-	    canvas.drawLine(rect[1][0], rect[1][1],
-			    rect[2][0], rect[2][1], paint);
-	    canvas.drawLine(rect[2][0], rect[2][1],
-			    rect[3][0], rect[3][1], paint);
-	    canvas.drawLine(rect[3][0], rect[3][1],
-			    rect[0][0], rect[0][1], paint);
+	    int offset = (width - bitmap.getWidth()) / 2;
+	    canvas.drawBitmap(bitmap, offset, 0, null);
 	}
     }
-
-    void makeColours(byte[] pixels, int width, int height)
-    {
-	if (colours == null || colours.length != (width * height))
-	    colours = new int[width * height];
-
-	for (int y = 0; y < height; y++)
-	    for (int x = 0; x < width; x++)
-		colours[y + ((width - x - 1) * height)] = 
-		    Color.rgb(pixels[(x * 3) + (y * width * 3) + 0],
-			      pixels[(x * 3) + (y * width * 3) + 1],
-			      pixels[(x * 3) + (y * width * 3) + 2]);
-    }
 }
-

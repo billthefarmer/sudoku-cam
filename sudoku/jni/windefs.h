@@ -30,10 +30,13 @@
 // Types and definitions from windows include files taken from the
 // MinGW project
 
+// http://developer.android.com/reference/android/graphics/Color.html
+// http://msdn.microsoft.com/en-us/library/dd162937%28v=vs.85%29.aspx
 #define GetRValue(c) ((BYTE)(c))
 #define GetGValue(c) ((BYTE)(((WORD)(c))>>8))
 #define GetBValue(c) ((BYTE)((c)>>16))
-#define RGB(r,g,b) ((COLORREF)((BYTE)(r)|((BYTE)(g) << 8)|((BYTE)(b) << 16)))
+#define RGB(r,g,b) ((COLORREF)((BYTE)(r)|((BYTE)(g) << 8)|((BYTE)(b) << 16)| \
+			0xff000000))
 
 #define BI_RGB 0
 
@@ -65,11 +68,6 @@
   memset(Destination, Fill, Length)
 #endif
 
-// Evil kludge for MS secure functions
-
-// #define sprintf_s(b,s,...) sprintf(b,__VA_ARGS__)
-// #define fopen_s(f,n,m) *f = fopen(n,m)
-
 #define TRACE(...)
 
 typedef unsigned char BYTE;
@@ -83,14 +81,6 @@ typedef DWORD *DWORD_PTR;
 typedef unsigned int UINT;
 typedef long LONG;
 
-typedef struct tagRGBQUAD
-{
-    BYTE    rgbBlue;
-    BYTE    rgbGreen;
-    BYTE    rgbRed;
-    BYTE    rgbReserved;
-} RGBQUAD,*LPRGBQUAD;
-
 typedef struct tagPOINT {
 	LONG x;
 	LONG y;
@@ -102,37 +92,5 @@ typedef struct tagSIZE {
 } SIZE,SIZEL,*PSIZE,*LPSIZE,*PSIZEL,*LPSIZEL;
 
 typedef SIZE CSize;
-
-typedef struct tagBITMAPFILEHEADER {
-	WORD	bfType;
-	DWORD	bfSize;
-	WORD	bfReserved1;
-	WORD	bfReserved2;
-	DWORD	bfOffBits;
-} BITMAPFILEHEADER,*LPBITMAPFILEHEADER,*PBITMAPFILEHEADER;
-
-typedef struct tagBITMAPINFOHEADER{
-	DWORD	biSize;
-	LONG	biWidth;
-	LONG	biHeight;
-	WORD	biPlanes;
-	WORD	biBitCount;
-	DWORD	biCompression;
-	DWORD	biSizeImage;
-	LONG	biXPelsPerMeter;
-	LONG	biYPelsPerMeter;
-	DWORD	biClrUsed;
-	DWORD	biClrImportant;
-} BITMAPINFOHEADER,*LPBITMAPINFOHEADER,*PBITMAPINFOHEADER;
-
-typedef struct videohdr_tag {
-	LPBYTE lpData;
-	DWORD dwBufferLength;
-	DWORD dwBytesUsed;
-	DWORD dwTimeCaptured;
-	DWORD dwUser;
-	DWORD dwFlags;
-	DWORD_PTR dwReserved[4];
-} VIDEOHDR, *LPVIDEOHDR;
 
 #endif

@@ -69,6 +69,18 @@ Java_org_billthefarmer_sudoku_Sudoku_process(JNIEnv *env,
 
     sudoku->process((BYTE *)data, size, resolution);
 
+    LPCOLORREF pix = (LPCOLORREF) data;
+
+    // for (int y = 0; y < 64; y++)
+    // {
+    // 	for (int x = 0; x < 64; x++)
+    // 	{
+    // 	    pix[x + y * width + 0] = RGB(255, 0, 0);
+    // 	    pix[x + y * width + 64] = RGB(0, 255, 0);
+    // 	    pix[x + y * width + 128] = RGB(0, 0, 255);
+    // 	}
+    // }
+
     env->ReleaseByteArrayElements(jdata, data, 0);
 
     return jdata;

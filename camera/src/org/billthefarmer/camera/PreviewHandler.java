@@ -23,6 +23,7 @@
 
 package org.billthefarmer.camera;
 
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +35,7 @@ public class PreviewHandler extends Handler
 {
     static final public int PROCESS_OCR = 0;
 
-    private GreyscaleRenderer render;
+    private YuvConverter converter;
     private PuzzleView view;
     private Sudoku sudoku;
 
@@ -50,7 +51,7 @@ public class PreviewHandler extends Handler
 
 	this.view = view;
 
-	render = new GreyscaleRenderer();
+	converter = new YuvConverter(view.getContext());
 	sudoku = new Sudoku();
 
 	rect = new int[4][2];
@@ -89,15 +90,15 @@ public class PreviewHandler extends Handler
 		int width = message.arg1;
 		int height =  message.arg2;
 		byte[] data = (byte[]) message.obj;
-		byte[] pixels = render.renderGreyscale(data, width, height);
-		byte[] result = sudoku.process(pixels, width, height, 24);
+		byte[] pixels = converter.convertToRGB(data, width, height);
+		byte[] result = sudoku.process(pixels, width, height, 32);
 
 		int angle = sudoku.getAngle();
 		boolean detected = sudoku.getPoints(rect);
 		boolean valid = sudoku.getPuzzleValues(puzzle);
 
-		view.setData(angle, detected, valid, rect, puzzle,
-			     result, width, height);
+		Bitmap bitmap = converter.convertBytes(result, width, height);
+		view.setData(angle, detected, valid, rect, puzzle, bitmap);
 		view.postInvalidate();
 	    }
 	    break;

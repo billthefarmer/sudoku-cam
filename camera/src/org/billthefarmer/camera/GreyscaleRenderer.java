@@ -23,12 +23,14 @@
 
 package org.billthefarmer.camera;
 
+import android.content.Context;
+
 public class GreyscaleRenderer
 {
     private byte[] pixels;
 
 
-    public GreyscaleRenderer()
+    public GreyscaleRenderer(Context context)
     {
     }
 
