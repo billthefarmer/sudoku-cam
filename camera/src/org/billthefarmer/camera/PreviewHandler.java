@@ -27,12 +27,15 @@ import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import org.billthefarmer.sudoku.Sudoku;
 
 public class PreviewHandler extends Handler
     implements Camera.PreviewCallback
 {
+    static final private String TAG = "PreviewHandler";
+
     static final public int PROCESS_OCR = 0;
 
     private YuvConverter converter;
@@ -65,15 +68,13 @@ public class PreviewHandler extends Handler
 
 	if (data != null)
 	{
-	    if (count % 5 == 0)
+	    if (count++ % 5 == 0)
 	    {
 		Message message =
 		    Message.obtain(this, PROCESS_OCR, size.width,
 				   size.height, data);
 		message.sendToTarget();
 	    }
-
-	    count++;
 	}
     }
 

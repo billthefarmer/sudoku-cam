@@ -172,7 +172,8 @@ void OCRDigit::Classify(const BYTE* blob, const POINT& lb,
         {
             for (x = 0; x < 5; x++)
             {
-                sum += abs(test[y][x] - m_zon[i][y][x]);
+		// Invert the y axis as data is upside down
+                sum += abs(test[y][x] - m_zon[i][4 - y][x]);
             }
         }
 

@@ -23,7 +23,8 @@
 
 package org.billthefarmer.camera;
 
-import java.io.IOException;
+import java.util.List;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class CameraPreview extends SurfaceView
     private SurfaceHolder holder;
     private LooperThread thread;
     private Camera camera;
+    private boolean focus;
 
     public CameraPreview(Context context)
     {
@@ -65,18 +67,7 @@ public class CameraPreview extends SurfaceView
     @Override
     public void surfaceCreated(SurfaceHolder holder)
     {
-        // The Surface has been created, now tell the camera where to
-        // draw the preview.
-        try
-        {
-            camera.setPreviewDisplay(holder);
-	    camera.setPreviewCallback(thread.handler);
-            camera.startPreview();
-        }
-        catch (IOException e)
-        {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
-        }
+	// empty, do it all in surfaceChanged
     }
 
     @Override
@@ -109,7 +100,14 @@ public class CameraPreview extends SurfaceView
         {
             // ignore: tried to stop a non-existent preview
         }
+
 	Camera.Parameters cameraParams = camera.getParameters();
+
+	List<String> modes = cameraParams.getSupportedFocusModes();
+	if (modes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+	    cameraParams
+		.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+
 	cameraParams.setPreviewSize(640, 480);
 	camera.setParameters(cameraParams);
 

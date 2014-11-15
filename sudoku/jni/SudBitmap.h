@@ -96,9 +96,9 @@ struct DisplaySud
 
 typedef struct tagPIX24
 {
-    BYTE    blue;
-    BYTE    green;
     BYTE    red;
+    BYTE    green;
+    BYTE    blue;
 } PIX24, *LPPIX24;
 
 class SudBitmap

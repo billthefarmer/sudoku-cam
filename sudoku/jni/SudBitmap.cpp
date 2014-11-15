@@ -1283,7 +1283,10 @@ void SudBitmap::DisplayCellNumber(int yBottom, int xLeft, COLORREF color,
             int y = Y + ((x - X) * (rb.y - lb.y)) / (rb.x - lb.x);
             if (y >= 0 && y < height)
             {
-                if (m_font[numberToDisplay - 1][yindex * 19 / cellHeight][xindex * 16 / cellWidth] == 0)
+		// Invert y index as font is upside down
+                if (m_font[numberToDisplay - 1]
+		    [(cellHeight - yindex) * 19 / cellHeight]
+		    [xindex * 16 / cellWidth] == 0)
                     SetPixel(x, y, color);
                 else if (display->white)
                     SetPixel(x, y, RGB(255, 255, 255));

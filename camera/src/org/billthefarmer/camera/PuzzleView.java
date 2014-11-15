@@ -81,12 +81,15 @@ public class PuzzleView extends View
     {
 	paint.setColor(Color.GREEN);
 	paint.setStyle(Paint.Style.STROKE);
-	paint.setStrokeWidth(3);
+	paint.setStrokeWidth(1);
 
 	if (bitmap != null)
 
 	{
-	    int offset = (width - bitmap.getWidth()) / 2;
+	    canvas.rotate(90);
+	    canvas.translate(0, -width);
+
+	    int offset = (height - bitmap.getWidth()) / 2;
 	    canvas.drawBitmap(bitmap, offset, 0, null);
 	}
     }

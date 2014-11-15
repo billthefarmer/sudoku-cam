@@ -30,19 +30,12 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
-
-// Type.Builder yuvType = new Type.Builder(rs, Element.U8(rs))
-// 	.setX(yuvByteArray.length);
-// Allocation in = Allocation.createTyped(rs, yuvType.create(),
-// 					   Allocation.USAGE_SCRIPT);
-
-// Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
-// 	.setX(W).setY(H);
-// Allocation out = Allocation.createTyped(rs, rgbaType.create(),
-// 					    Allocation.USAGE_SCRIPT);
+import android.util.Log;
 
 public class YuvConverter
 {
+    static final private String TAG = "YuvConverter";
+
     private RenderScript rs;
     private ScriptIntrinsicYuvToRGB siYuvToRGB;
     private Allocation yuvIn;
@@ -66,14 +59,12 @@ public class YuvConverter
 	{
 	    Type.Builder yuvType = new Type.Builder(rs, Element.U8(rs))
 		.setX(yuv.length);
-	    yuvIn = Allocation.createTyped(rs, yuvType.create(),
-					   Allocation.USAGE_SCRIPT);
+	    yuvIn = Allocation.createTyped(rs, yuvType.create());
 
 	    Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
 		.setX(width)
 		.setY(height);
-	    rgbOut = Allocation.createTyped(rs, rgbaType.create(),
-					    Allocation.USAGE_SCRIPT);
+	    rgbOut = Allocation.createTyped(rs, rgbaType.create());
 	    pixels = new byte[size];
 	}
 

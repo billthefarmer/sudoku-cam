@@ -71,16 +71,6 @@ Java_org_billthefarmer_sudoku_Sudoku_process(JNIEnv *env,
 
     LPCOLORREF pix = (LPCOLORREF) data;
 
-    // for (int y = 0; y < 64; y++)
-    // {
-    // 	for (int x = 0; x < 64; x++)
-    // 	{
-    // 	    pix[x + y * width + 0] = RGB(255, 0, 0);
-    // 	    pix[x + y * width + 64] = RGB(0, 255, 0);
-    // 	    pix[x + y * width + 128] = RGB(0, 0, 255);
-    // 	}
-    // }
-
     env->ReleaseByteArrayElements(jdata, data, 0);
 
     return jdata;
@@ -208,47 +198,19 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 
     if (!enableProcessing)
     {
-        // actual image processing work done here
-        // LPBYTE nextImage = (LPBYTE)lpVHdr->lpData;
-        // NB: actually, VFW  sends WM_PAINT message after the
-        // calling of this callback, so, we can see the results
-        // without any additional programming:)
         switch(resolution)
         {
         case 8:
-            //I've never seen this resolution!
-            break;
         case 16:
-            // Note: this will work correctly only for RGB format.
-            // I don't know how to recognize YVU format!
-            // Who knows?:))
+            // ignore
             break;
         case 24:
-        {
-            SudBitmap sud(resolution, data, size, &display);
-            sud.Monochrome();
-            if (sud.HoughTransformCenter(&strongestLine))
-	    	// detects the angle of rotation
-		rectDetected = sud.DetectRect(strongestLine.theta);
-                if (rectDetected)
-		{
-		    sud.GetRect(rect);
-		    ocrValid = sud.OCR();
-                    if (ocrValid)
-		    {
-                        sud.Solve();
-			sud.DisplaySolution();
-		    }
-		}
-            break;
-        }
         case 32:
-        {
-            SudBitmap sud(resolution, data, size, &display);
-            sud.Monochrome();
-            if (sud.HoughTransformCenter(&strongestLine))
-	    	// detects the angle of rotation
-		rectDetected = sud.DetectRect(strongestLine.theta);
+	    {
+		SudBitmap sud(resolution, data, size, &display);
+		sud.Monochrome();
+		if (sud.HoughTransformCenter(&strongestLine))
+		    rectDetected = sud.DetectRect(strongestLine.theta);
                 if (rectDetected)
 		{
 		    sud.GetRect(rect);
@@ -259,11 +221,11 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 			sud.DisplaySolution();
 		    }
 		}
-            break;
-        }
-        default:
-            //unknown format
-            break;
-        }
+		break;
+	    }
+	default:
+	    //unknown format
+	    break;
+	}
     }
 }
