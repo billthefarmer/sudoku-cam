@@ -27,6 +27,8 @@
 
 Sudoku *sudoku;
 
+// Global pointer to rotated bitmap byte array
+
 BYTE *pixels = NULL;
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,7 +52,7 @@ Java_org_billthefarmer_sudoku_Sudoku_init(JNIEnv *env,
 //		height - height of bitmap
 //		resolution - resolution of bitmap
 //
-// Returns:	The bitmap after it has possibly been drawn on
+// Returns:	The bitmap after it has been rotated and possibly drawn on
 //////////////////////////////////////////////////////////////////////////
 
 jbyteArray
@@ -63,23 +65,39 @@ Java_org_billthefarmer_sudoku_Sudoku_process(JNIEnv *env,
 {
     SIZE size;
 
+    // Create a new byte array
+
     if (pixels == NULL)
 	pixels = new BYTE[width * height * 4];
+
+    // Get the bitmap data
 
     jbyte *data = env->GetByteArrayElements(jdata, NULL);
     jint length = env->GetArrayLength(jdata);
 
+    // Get 32 bit references to the bitmaps
+
     LPCOLORREF rgb = (LPCOLORREF) data;
     LPCOLORREF rot = (LPCOLORREF) pixels;
 
+    // Rotate the bitmap
+
     for (int y = 0; y < height; y++)
 	for (int x = 0; x < width; x++)
-	    rot[y + (((width - 1) - x) * height)] = rgb[x + (y * width)];;
+	    rot[y + (((width - 1) - x) * height)] = rgb[x + (y * width)];
+
+    // Reverse the height and width dimensions
 
     size.cx = height;
     size.cy = width;
 
+    // Call the Sudoku OCR code
+
     sudoku->process(pixels, size, resolution);
+
+    // Release the input bitmap and overwrite the same jave byte array
+    // with the rotated and drawn on bitmap. This is to avoid creating
+    // a new java byte array each time
 
     env->ReleaseByteArrayElements(jdata, data, 0);
     env->SetByteArrayRegion(jdata, 0, length, (jbyte *) pixels);
@@ -182,7 +200,8 @@ Java_org_billthefarmer_sudoku_Sudoku_release(JNIEnv *env,
 
 /////////////////////////////////////////////////////////////////////////////
 // Sudoku construction/destruction
-
+//
+/////////////////////////////////////////////////////////////////////////////
 Sudoku::Sudoku()
 {
     enableProcessing = FALSE;
@@ -204,6 +223,14 @@ Sudoku::~Sudoku()
 {
 }
 
+//////////////////////////////////////////////////////////////////////////
+// Function:	Sudoku
+// Purpose:	Do the OCR and sudoku puzzle decoding
+// Parameters:	data - byte array bitmap from device camera
+//		size - dimensions of bitmap
+//		resolution- resolution of bitmap
+//
+//////////////////////////////////////////////////////////////////////////
 void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 {
 
