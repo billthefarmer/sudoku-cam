@@ -25,11 +25,11 @@ package org.billthefarmer.camera;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-import android.renderscript.Type;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
+import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
+import android.support.v8.renderscript.Type;
 import android.util.Log;
 
 public class YuvConverter
@@ -37,11 +37,16 @@ public class YuvConverter
     static final private String TAG = "YuvConverter";
 
     private RenderScript rs;
+    private ScriptC_rotate scriptCRotate;
     private ScriptIntrinsicYuvToRGB siYuvToRGB;
     private Allocation yuvIn;
+    private Allocation rgbIn;
     private Allocation rgbOut;
+    private Allocation rotIn;
+    private Allocation rotOut;
 
     private byte[] pixels;
+    private byte[] bytes;
     private Bitmap bitmap;
 
     public YuvConverter(Context context)
@@ -49,6 +54,7 @@ public class YuvConverter
 	rs = RenderScript.create(context);
 	siYuvToRGB =
 	    ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
+        scriptCRotate = new ScriptC_rotate(rs);
     }
 
     public byte[] convertToRGB(byte[] yuv, int width, int height)
@@ -76,24 +82,55 @@ public class YuvConverter
 	return pixels;
     }
 
-    public Bitmap convertBytes(byte[] rgb, int width, int height)
+    public Bitmap convertRGB(byte[] rgb, int width, int height)
     {
 	int size = (width * height * 4);
 
-	if (rgbOut != null || rgbOut.getBytesSize() != size)
+	if (rgbIn == null || rgbIn.getBytesSize() != size)
 	{
 	    Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
 		.setX(width)
 		.setY(height);
-	    rgbOut = Allocation.createTyped(rs, rgbaType.create(),
-					    Allocation.USAGE_SCRIPT);
+	    rgbIn = Allocation.createTyped(rs, rgbaType.create());
 	    bitmap = Bitmap.createBitmap(width, height,
 					 Bitmap.Config.ARGB_8888);
 	}
 
-	rgbOut.copyFrom(rgb);
-	rgbOut.copyTo(bitmap);
-
+	rgbIn.copyFrom(rgb);
+	rgbIn.copyTo(bitmap);
 	return bitmap;
+    }
+
+    public byte[] rotateRGB(byte rgb[], int width, int height)
+    {
+	int size = (width * height * 4);
+
+	if (rotIn == null || rotIn.getBytesSize() != size)
+	{
+	    Type.Builder rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
+		.setX(width)
+		.setY(height);
+	    rotIn = Allocation.createTyped(rs, rgbaType.create());
+
+	    rgbaType = new Type.Builder(rs, Element.RGBA_8888(rs))
+		.setX(height)
+		.setY(width);
+	    rotOut = Allocation.createTyped(rs, rgbaType.create());
+
+	    bytes = new byte[size];
+	}
+
+	Log.d(TAG, "size = " + size + ", width = " + width +
+	      ", height = " + height);
+
+	rotIn.copyFrom(rgb);
+	scriptCRotate.set_in(rotIn);
+	scriptCRotate.set_out(rotOut);
+	scriptCRotate.set_width(width);
+	scriptCRotate.set_height(height);
+	scriptCRotate.forEach_rotate(rotIn, rotOut);
+	rotOut.copyTo(bytes);
+
+	return bytes;
     }
 }

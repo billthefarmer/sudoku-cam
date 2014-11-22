@@ -27,6 +27,8 @@
 
 Sudoku *sudoku;
 
+BYTE *pixels = NULL;
+
 //////////////////////////////////////////////////////////////////////////
 // Function:	init()
 // Purpose:	Create Sudoku object
@@ -61,17 +63,26 @@ Java_org_billthefarmer_sudoku_Sudoku_process(JNIEnv *env,
 {
     SIZE size;
 
+    if (pixels == NULL)
+	pixels = new BYTE[width * height * 4];
+
     jbyte *data = env->GetByteArrayElements(jdata, NULL);
     jint length = env->GetArrayLength(jdata);
 
-    size.cx = width;
-    size.cy = height;
+    LPCOLORREF rgb = (LPCOLORREF) data;
+    LPCOLORREF rot = (LPCOLORREF) pixels;
 
-    sudoku->process((BYTE *)data, size, resolution);
+    for (int y = 0; y < height; y++)
+	for (int x = 0; x < width; x++)
+	    rot[y + (((width - 1) - x) * height)] = rgb[x + (y * width)];;
 
-    LPCOLORREF pix = (LPCOLORREF) data;
+    size.cx = height;
+    size.cy = width;
+
+    sudoku->process(pixels, size, resolution);
 
     env->ReleaseByteArrayElements(jdata, data, 0);
+    env->SetByteArrayRegion(jdata, 0, length, (jbyte *) pixels);
 
     return jdata;
 }
@@ -217,6 +228,7 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 		    ocrValid = sud.OCR();
                     if (ocrValid)
 		    {
+			sud.GetPuzzle(puzzle);
                         sud.Solve();
 			sud.DisplaySolution();
 		    }

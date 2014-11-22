@@ -92,13 +92,14 @@ public class PreviewHandler extends Handler
 		int height =  message.arg2;
 		byte[] data = (byte[]) message.obj;
 		byte[] pixels = converter.convertToRGB(data, width, height);
+		// byte[] rotated = converter.rotateRGB(pixels, width, height);
 		byte[] result = sudoku.process(pixels, width, height, 32);
 
 		int angle = sudoku.getAngle();
 		boolean detected = sudoku.getPoints(rect);
 		boolean valid = sudoku.getPuzzleValues(puzzle);
 
-		Bitmap bitmap = converter.convertBytes(result, width, height);
+		Bitmap bitmap = converter.convertRGB(result, height, width);
 		view.setData(angle, detected, valid, rect, puzzle, bitmap);
 		view.postInvalidate();
 	    }

@@ -58,8 +58,9 @@ public class PuzzleView extends View
 	paint = new Paint();
     }
 
-    public void setData(int angle, boolean detected, boolean valid,
-			int[][] rect, int[][] puzzle, Bitmap bitmap)
+    public synchronized void setData(int angle, boolean detected, boolean valid,
+				     int[][] rect, int[][] puzzle,
+				     Bitmap bitmap)
     {
 	this.angle = angle;
 	this.detected = detected;
@@ -77,7 +78,7 @@ public class PuzzleView extends View
     }
 
     @Override
-    public void onDraw(Canvas canvas)
+    public synchronized void onDraw(Canvas canvas)
     {
 	paint.setColor(Color.GREEN);
 	paint.setStyle(Paint.Style.STROKE);
@@ -86,10 +87,7 @@ public class PuzzleView extends View
 	if (bitmap != null)
 
 	{
-	    canvas.rotate(90);
-	    canvas.translate(0, -width);
-
-	    int offset = (height - bitmap.getWidth()) / 2;
+	    int offset = (width - bitmap.getWidth()) / 2;
 	    canvas.drawBitmap(bitmap, offset, 0, null);
 	}
     }
