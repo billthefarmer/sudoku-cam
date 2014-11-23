@@ -111,7 +111,7 @@ public class CameraPreview extends SurfaceView
 	cameraParams.setPreviewSize(640, 480);
 	camera.setParameters(cameraParams);
 
-	Camera.Size size = camera.getParameters().getPreviewSize();
+	Camera.Size size = cameraParams.getPreviewSize();
         FrameLayout.LayoutParams params =
 	    (FrameLayout.LayoutParams) getLayoutParams();
         params.height = w * size.width / size.height; // portrait mode only

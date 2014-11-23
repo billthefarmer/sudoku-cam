@@ -37,24 +37,18 @@ public class YuvConverter
     static final private String TAG = "YuvConverter";
 
     private RenderScript rs;
-    private ScriptC_rotate scriptCRotate;
-    private ScriptIntrinsicYuvToRGB siYuvToRGB;
+    private ScriptIntrinsicYuvToRGB si;
     private Allocation yuvIn;
     private Allocation rgbIn;
     private Allocation rgbOut;
-    private Allocation rotIn;
-    private Allocation rotOut;
 
     private byte[] pixels;
-    private byte[] bytes;
     private Bitmap bitmap;
 
     public YuvConverter(Context context)
     {
 	rs = RenderScript.create(context);
-	siYuvToRGB =
-	    ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
-        scriptCRotate = new ScriptC_rotate(rs);
+	si = ScriptIntrinsicYuvToRGB.create(rs, Element.U8_4(rs));
     }
 
     public byte[] convertToRGB(byte[] yuv, int width, int height)
@@ -75,8 +69,8 @@ public class YuvConverter
 	}
 
 	yuvIn.copyFrom(yuv);
-	siYuvToRGB.setInput(yuvIn);
-	siYuvToRGB.forEach(rgbOut);
+	si.setInput(yuvIn);
+	si.forEach(rgbOut);
 	rgbOut.copyTo(pixels);
 
 	return pixels;
@@ -103,7 +97,7 @@ public class YuvConverter
 	rgbIn.copyTo(bitmap);
 	return bitmap;
     }
-
+    /*
     public byte[] rotateRGB(byte rgb[], int width, int height)
     {
 	int size = (width * height * 4);
@@ -140,4 +134,5 @@ public class YuvConverter
 
 	return bytes;
     }
+    */
 }

@@ -25,9 +25,11 @@ package org.billthefarmer.camera;
 
 import android.app.Activity;
 import android.hardware.Camera;
+import android.media.MediaActionSound;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -39,6 +41,7 @@ public class CameraActivity extends Activity
     private int cameraId;
     private Camera camera;
     private CameraPreview preview;
+    private MediaActionSound sound;
     private PuzzleView view;
 
     private LooperThread thread;
@@ -64,12 +67,14 @@ public class CameraActivity extends Activity
 	layout.addView(button);
         FrameLayout.LayoutParams params =
 	    (FrameLayout.LayoutParams) button.getLayoutParams();
+	params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+	params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+	params.bottomMargin = 128;
 	params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-	params.bottomMargin = 16;
         button.setLayoutParams(params);
 
+	button.setBackgroundResource(R.drawable.colour_button);
         button.setOnClickListener(this);
-	// button.bringToFront();
 
 	thread = new LooperThread(view);
     }
@@ -89,6 +94,10 @@ public class CameraActivity extends Activity
 	preview.setCamera(camera);
 	preview.setThread(thread);
 
+	// Load up shutter sound
+	sound = new MediaActionSound();
+	sound.load(MediaActionSound.SHUTTER_CLICK);
+
 	try
 	{
 	    thread.start();
@@ -107,6 +116,7 @@ public class CameraActivity extends Activity
 
         // Because the Camera object is a shared resource, it's very
         // important to release it when the activity is paused.
+
         if (camera != null)
         {
 	    try
@@ -122,6 +132,9 @@ public class CameraActivity extends Activity
 		// Ignore, no preview running
 	    }
 	}
+
+	// Release sound resources
+	sound.release();
 
 	if (thread != null)
 	{
@@ -140,5 +153,6 @@ public class CameraActivity extends Activity
     @Override
     public void onPictureTaken(byte[] data, Camera camera)
     {
+	sound.play(MediaActionSound.SHUTTER_CLICK);
     }
 }
