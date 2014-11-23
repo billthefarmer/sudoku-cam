@@ -36,6 +36,11 @@ class LooperThread extends Thread
     public PuzzleView view;
     public PreviewHandler handler;
 
+    // This is all a bit obtuse because this thread doesn't need a
+    // view but the handler does so it can create a converter, and so
+    // it can pass the view data and invalidate it, and the handler
+    // has to be created from here so it runs on this thread
+
     public LooperThread(PuzzleView view)
     {
 	super(TAG);

@@ -26,6 +26,7 @@ package org.billthefarmer.camera;
 import android.app.Activity;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -56,13 +57,19 @@ public class CameraActivity extends Activity
         FrameLayout layout = (FrameLayout) findViewById(R.id.camera_preview);
         layout.addView(preview);
 
-        // Add a listener to the Capture button
-        Button captureButton = (Button) findViewById(R.id.button_capture);
-        captureButton.setOnClickListener(this);
-	captureButton.bringToFront();
-
 	view = new PuzzleView(this);
 	layout.addView(view);
+
+        Button button = new Button(this);
+	layout.addView(button);
+        FrameLayout.LayoutParams params =
+	    (FrameLayout.LayoutParams) button.getLayoutParams();
+	params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+	params.bottomMargin = 16;
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(this);
+	// button.bringToFront();
 
 	thread = new LooperThread(view);
     }

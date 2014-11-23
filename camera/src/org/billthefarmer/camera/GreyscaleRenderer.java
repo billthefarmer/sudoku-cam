@@ -29,6 +29,8 @@ public class GreyscaleRenderer
 {
     private byte[] pixels;
 
+    // Not used because ScriptIntrinsicYuvToRGB does the business
+    // better
 
     public GreyscaleRenderer(Context context)
     {

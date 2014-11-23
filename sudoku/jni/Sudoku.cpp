@@ -224,7 +224,7 @@ Sudoku::~Sudoku()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Function:	Sudoku
+// Function:	process()
 // Purpose:	Do the OCR and sudoku puzzle decoding
 // Parameters:	data - byte array bitmap from device camera
 //		size - dimensions of bitmap

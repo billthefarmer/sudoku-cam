@@ -8,6 +8,9 @@ rs_allocation out;
 int width;
 int height;
 
+// This doesn't work because the input and output allocations have to
+// be identical
+
 uchar4 __attribute__((kernel)) rotate(uchar4 rgba, uint32_t x, uint32_t y)
 {
     const uchar4 *element = rsGetElementAt(in, y, height - x - 1);

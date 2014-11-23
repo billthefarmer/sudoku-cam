@@ -96,6 +96,9 @@ public class YuvConverter
 					 Bitmap.Config.ARGB_8888);
 	}
 
+	// This is just using the copyFrom and copyTo methods to write
+	// the byte array into a bitmap
+
 	rgbIn.copyFrom(rgb);
 	rgbIn.copyTo(bitmap);
 	return bitmap;
@@ -119,6 +122,10 @@ public class YuvConverter
 
 	    bytes = new byte[size];
 	}
+
+	// This doesn't work because the input and output allocations
+	// have to be identical. You could possibly cheat by telling
+	// porkies, but doing it in native code is easier
 
 	Log.d(TAG, "size = " + size + ", width = " + width +
 	      ", height = " + height);
