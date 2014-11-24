@@ -688,14 +688,14 @@ BOOL SudBitmap::DetectRect(int theta)
     unsigned int sum;
     float sina, cosa;
     Line left, top, right, bottom;	// lines forming the white
-    // rectangle around sudoku
-    // grid - this is what we're
-    // looking for the step 1
+					// rectangle around sudoku
+					// grid - this is what we're
+					// looking for the step 1
     int* whiteV = new int[width];	// vertical uninterrupted
-    // white pixel counter
+					// white pixel counter
     ZeroMemory(whiteV, sizeof(int)*width);
     int* whiteH = new int[height];	// horizontal uninterrupted
-    // white pixel counter
+					// white pixel counter
     ZeroMemory(whiteH, sizeof(int)*height);
 
     static const int RECT = 1;
@@ -1087,8 +1087,8 @@ void SudBitmap::GetRect(POINT rect[])
 {
     rect[0] = m_grid[0][0];
     rect[1] = m_grid[9][0];
-    rect[2] = m_grid[0][9];
-    rect[3] = m_grid[9][9];
+    rect[2] = m_grid[9][9];
+    rect[3] = m_grid[0][9];
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1109,7 +1109,8 @@ void SudBitmap::DrawRect(const Line& left, const Line& top, const Line& right,
     // left line
     for (y = lb.y; y < lt.y; y++)
     {
-        x = (int)(y * cos(left.theta * DEG2RAD) / sin(left.theta * DEG2RAD) + (left.rho - m_rhos) / sin(left.theta * DEG2RAD));
+        x = (int)(y * cos(left.theta * DEG2RAD) / sin(left.theta * DEG2RAD) +
+		  (left.rho - m_rhos) / sin(left.theta * DEG2RAD));
         if (x > 0 && x < width && y > 0 && y < height)
             SetPixel(x, y, color);
     }
@@ -1117,7 +1118,8 @@ void SudBitmap::DrawRect(const Line& left, const Line& top, const Line& right,
     // bottom line
     for (x = lb.x; x < rb.x; x++)
     {
-        y = (int)(x * cos(bottom.theta * DEG2RAD) / sin(bottom.theta * DEG2RAD) + (bottom.rho - m_rhos) / sin(bottom.theta * DEG2RAD));
+        y = (int)(x * cos(bottom.theta * DEG2RAD) / sin(bottom.theta * DEG2RAD)
+		  + (bottom.rho - m_rhos) / sin(bottom.theta * DEG2RAD));
         if (x > 0 && x < width && y > 0 && y < height)
             SetPixel(x, y, color);
     }
@@ -1125,14 +1127,16 @@ void SudBitmap::DrawRect(const Line& left, const Line& top, const Line& right,
     // right line
     for (y = rb.y; y < rt.y; y++)
     {
-        x = (int)(y * cos(right.theta * DEG2RAD) / sin(right.theta * DEG2RAD) + (right.rho - m_rhos) / sin(right.theta * DEG2RAD));
+        x = (int)(y * cos(right.theta * DEG2RAD) / sin(right.theta * DEG2RAD) +
+		  (right.rho - m_rhos) / sin(right.theta * DEG2RAD));
         if (x > 0 && x < width && y > 0 && y < height)
             SetPixel(x, y, color);
     }
     // top line
     for (x = lt.x; x < rt.x; x++)
     {
-        y = (int)(x * cos(top.theta * DEG2RAD) / sin(top.theta * DEG2RAD) + (top.rho - m_rhos) / sin(top.theta * DEG2RAD));
+        y = (int)(x * cos(top.theta * DEG2RAD) / sin(top.theta * DEG2RAD) +
+		  (top.rho - m_rhos) / sin(top.theta * DEG2RAD));
         if (x > 0 && x < width && y > 0 && y < height)
             SetPixel(x, y, color);
     }
@@ -1221,7 +1225,8 @@ BYTE SudBitmap::GetPixelGray(int x, int y)
         PIX24 pix;
         LPPIX24 buf = (LPPIX24)m_buf;
         pix = buf[y * width + x];
-        return (BYTE)((((pix.red * 77) + (pix.green * 150) + (pix.blue * 28)) >> 8) & 255);
+        return (BYTE)((((pix.red * 77) + (pix.green * 150) +
+			(pix.blue * 28)) >> 8) & 255);
         // 100% Intesity = 30% Red + 59% Green + 11% Blue
     }
     break;
@@ -1229,7 +1234,8 @@ BYTE SudBitmap::GetPixelGray(int x, int y)
     {
         COLORREF pix;
         pix = ((LPCOLORREF)m_buf)[y * width + x];
-        return (((GetRValue(pix) * 77) + (GetGValue(pix) * 150) + (GetBValue(pix) * 28)) >> 8) & 255;
+        return (((GetRValue(pix) * 77) + (GetGValue(pix) * 150) +
+		 (GetBValue(pix) * 28)) >> 8) & 255;
         // 100% Intesity = 30% Red + 59% Green + 11% Blue
     }
     break;

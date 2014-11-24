@@ -64,12 +64,12 @@ public class PreviewHandler extends Handler
     @Override
     public void onPreviewFrame(byte[] data, Camera camera)
     {
-	Camera.Size size = camera.getParameters().getPreviewSize();
-
 	if (data != null)
 	{
-	    if (count++ % 5 == 0)
+	    if (count++ % 10 == 0)
 	    {
+		Camera.Size size = camera.getParameters().getPreviewSize();
+
 		Message message =
 		    Message.obtain(this, PROCESS_OCR, size.width,
 				   size.height, data);
@@ -92,7 +92,6 @@ public class PreviewHandler extends Handler
 		int height =  message.arg2;
 		byte[] data = (byte[]) message.obj;
 		byte[] pixels = converter.convertToRGB(data, width, height);
-		// byte[] rotated = converter.rotateRGB(pixels, width, height);
 		byte[] result = sudoku.process(pixels, width, height, 32);
 
 		int angle = sudoku.getAngle();
@@ -102,6 +101,11 @@ public class PreviewHandler extends Handler
 		Bitmap bitmap = converter.convertRGB(result, height, width);
 		view.setData(angle, detected, valid, rect, puzzle, bitmap);
 		view.postInvalidate();
+
+		// if (detected)
+		//     for (int i = 0; i < rect.length; i++)
+		// 	Log.d(TAG, "corner = " + rect[i][0] + ", " +
+		// 	      rect[i][1]);
 	    }
 	    break;
 
