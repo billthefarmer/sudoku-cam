@@ -84,22 +84,26 @@ public class PuzzleView extends View
 	{
 	    int offset = (width - bitmap.getWidth()) / 2;
 	    canvas.drawBitmap(bitmap, offset, 0, null);
-	}
 
-	if (rect != null && detected == true)
-	{
-	    paint.setColor(Color.GREEN);
-	    paint.setStyle(Paint.Style.STROKE);
-	    paint.setStrokeWidth(2);
+	    if (rect != null && detected == true)
+	    {
+		float scale = width / (float) bitmap.getWidth();
 
-	    canvas.drawLine(rect[0][0], rect[0][1],
-			    rect[1][0], rect[1][1], paint);
-	    canvas.drawLine(rect[1][0], rect[1][1], rect[2][0],
-			    rect[2][1], paint);
-	    canvas.drawLine(rect[2][0], rect[2][1], rect[3][0],
-			    rect[3][1], paint);
-	    canvas.drawLine(rect[3][0], rect[3][1], rect[0][0],
-			    rect[0][1], paint);
+		canvas.scale(scale, scale);
+
+		paint.setColor(Color.GREEN);
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeWidth(2);
+
+		canvas.drawLine(rect[0][0], rect[0][1],
+				rect[1][0], rect[1][1], paint);
+		canvas.drawLine(rect[1][0], rect[1][1], rect[2][0],
+				rect[2][1], paint);
+		canvas.drawLine(rect[2][0], rect[2][1], rect[3][0],
+				rect[3][1], paint);
+		canvas.drawLine(rect[3][0], rect[3][1], rect[0][0],
+				rect[0][1], paint);
+	    }
 	}
     }
 }

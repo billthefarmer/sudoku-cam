@@ -98,6 +98,11 @@ public class CameraActivity extends Activity
 	sound = new MediaActionSound();
 	sound.load(MediaActionSound.SHUTTER_CLICK);
 
+	view.setSystemUiVisibility(// View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+				   View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+				   View.SYSTEM_UI_FLAG_LOW_PROFILE |
+				   View.SYSTEM_UI_FLAG_FULLSCREEN);
+
 	try
 	{
 	    thread.start();
