@@ -27,10 +27,11 @@
 #include "SudBitmap.h"
 #include "org_billthefarmer_sudoku_Sudoku.h"
 
+// Sudoku
+
 class Sudoku
 {
 public:
-    BOOL enableProcessing;
     BOOL rectDetected;
     BOOL ocrValid;
 
@@ -40,7 +41,7 @@ public:
     Bin strongestLine;
     DisplaySud display;
 
-    Sudoku();
+    Sudoku(void *);
     ~Sudoku();
 
     void process(BYTE[], SIZE, DWORD);

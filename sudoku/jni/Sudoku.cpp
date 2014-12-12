@@ -23,9 +23,9 @@
 
 #include "Sudoku.h"
 
-// Global pointer to Sudoku object
+// Global static instance of Sudoku object
 
-Sudoku *sudoku;
+Sudoku sudoku(NULL);
 
 // Global pointer to rotated bitmap byte array
 
@@ -40,7 +40,8 @@ void
 Java_org_billthefarmer_sudoku_Sudoku_init(JNIEnv *env,
 					  jobject obj)
 {
-    sudoku = new Sudoku();
+    // Not used, replaced by static instance
+    // sudoku = new Sudoku();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,7 +94,7 @@ Java_org_billthefarmer_sudoku_Sudoku_process(JNIEnv *env,
 
     // Call the Sudoku OCR code
 
-    sudoku->process(pixels, size, resolution);
+    sudoku.process(pixels, size, resolution);
 
     // Release the input bitmap and overwrite the same jave byte array
     // with the rotated and drawn on bitmap. This is to avoid creating
@@ -116,7 +117,7 @@ jint
 Java_org_billthefarmer_sudoku_Sudoku_getAngle(JNIEnv *env,
 					      jobject obj)
 {
-    return sudoku->strongestLine.theta;
+    return sudoku.strongestLine.theta;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -135,21 +136,21 @@ Java_org_billthefarmer_sudoku_Sudoku_getRect(JNIEnv *env,
 					     jobject obj,
 					     jintArray jrect)
 {
-    if (sudoku->rectDetected)
+    if (sudoku.rectDetected)
     {
 	jint *rect = env->GetIntArrayElements(jrect, NULL);
 	jint length = env->GetArrayLength(jrect);
 
 	if (length == 8)
 	{
-	    rect[0] = sudoku->rect[0].x;
-	    rect[1] = sudoku->rect[0].y;
-	    rect[2] = sudoku->rect[1].x;
-	    rect[3] = sudoku->rect[1].y;
-	    rect[4] = sudoku->rect[2].x;
-	    rect[5] = sudoku->rect[2].y;
-	    rect[6] = sudoku->rect[3].x;
-	    rect[7] = sudoku->rect[3].y;
+	    rect[0] = sudoku.rect[0].x;
+	    rect[1] = sudoku.rect[0].y;
+	    rect[2] = sudoku.rect[1].x;
+	    rect[3] = sudoku.rect[1].y;
+	    rect[4] = sudoku.rect[2].x;
+	    rect[5] = sudoku.rect[2].y;
+	    rect[6] = sudoku.rect[3].x;
+	    rect[7] = sudoku.rect[3].y;
 
 	    env->ReleaseIntArrayElements(jrect, rect, 0);
 	    return true;
@@ -172,7 +173,7 @@ Java_org_billthefarmer_sudoku_Sudoku_getPuzzle(JNIEnv *env,
 					       jobject obj,
 					       jintArray jpuzzle)
 {
-    if (sudoku->ocrValid)
+    if (sudoku.ocrValid)
     {
 	jint *puzzle = env->GetIntArrayElements(jpuzzle, NULL);
 	jint length = env->GetArrayLength(jpuzzle);
@@ -181,7 +182,7 @@ Java_org_billthefarmer_sudoku_Sudoku_getPuzzle(JNIEnv *env,
 	{
 	    for (int y = 0; y < 9; y++)
 		for (int x = 0; x < 9; x++)
-		    puzzle[x + (y * 9)] = sudoku->puzzle[y][x];
+		    puzzle[x + (y * 9)] = sudoku.puzzle[y][x];
 
 	    return true;
 	}
@@ -195,17 +196,16 @@ void
 Java_org_billthefarmer_sudoku_Sudoku_release(JNIEnv *env,
 					     jobject obj)
 {
-    delete sudoku;
+    // Not used, can't delete a static instance
+    // delete sudoku;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Sudoku construction/destruction
 //
 /////////////////////////////////////////////////////////////////////////////
-Sudoku::Sudoku()
+Sudoku::Sudoku(void *dummy)
 {
-    enableProcessing = FALSE;
-
     display.black = FALSE;
     display.white = FALSE;
     display.rotation = FALSE;
@@ -233,38 +233,35 @@ Sudoku::~Sudoku()
 //////////////////////////////////////////////////////////////////////////
 void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 {
-
-    if (!enableProcessing)
+    switch(resolution)
     {
-        switch(resolution)
-        {
-        case 8:
-        case 16:
-            // ignore
-            break;
-        case 24:
-        case 32:
+    case 8:
+    case 16:
+	// ignore
+	break;
+    case 24:
+    case 32:
+	{
+	    SudBitmap sud(resolution, data, size, &display);
+	    sud.Monochrome();
+	    if (sud.HoughTransformCenter(&strongestLine))
+		rectDetected = sud.DetectRect(strongestLine.theta);
+	    if (rectDetected)
 	    {
-		SudBitmap sud(resolution, data, size, &display);
-		sud.Monochrome();
-		if (sud.HoughTransformCenter(&strongestLine))
-		    rectDetected = sud.DetectRect(strongestLine.theta);
-                if (rectDetected)
+		sud.GetRect(rect);
+		ocrValid = sud.OCR();
+		if (ocrValid)
 		{
-		    sud.GetRect(rect);
-		    ocrValid = sud.OCR();
-                    if (ocrValid)
-		    {
-			sud.GetPuzzle(puzzle);
-                        sud.Solve();
-			sud.DisplaySolution();
-		    }
+		    sud.GetPuzzle(puzzle);
+		    sud.Solve();
+		    sud.DisplaySolution();
 		}
-		break;
 	    }
-	default:
-	    //unknown format
 	    break;
 	}
+    default:
+	//unknown format
+	break;
     }
 }
+
