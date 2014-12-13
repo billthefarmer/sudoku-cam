@@ -34,6 +34,7 @@ class Sudoku
 public:
     BOOL rectDetected;
     BOOL ocrValid;
+    BOOL sudSolved;
 
     POINT rect[4];
     int puzzle[9][9];
