@@ -245,16 +245,16 @@ void Sudoku::process(BYTE data[], SIZE size, DWORD resolution)
 	    SudBitmap sud(resolution, data, size, &display);
 	    sud.Monochrome();
 	    if (sud.HoughTransformCenter(&strongestLine))
-	    if (rectDetected = sud.DetectRect(strongestLine.theta))
-	    {
-		sud.GetRect(rect);
-		if (ocrValid = sud.OCR())
+		if (rectDetected = sud.DetectRect(strongestLine.theta))
 		{
-		    sud.GetPuzzle(puzzle);
-		    if (sudSolved = sud.Solve())
-			sud.DisplaySolution();
+		    sud.GetRect(rect);
+		    if (ocrValid = sud.OCR())
+		    {
+			sud.GetPuzzle(puzzle);
+			if (sudSolved = sud.Solve())
+			    sud.DisplaySolution();
+		    }
 		}
-	    }
 	    break;
 	}
     default:
