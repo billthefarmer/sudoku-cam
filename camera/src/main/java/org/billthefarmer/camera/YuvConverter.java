@@ -25,11 +25,11 @@ package org.billthefarmer.camera;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.Element;
-import android.support.v8.renderscript.RenderScript;
-import android.support.v8.renderscript.ScriptIntrinsicYuvToRGB;
-import android.support.v8.renderscript.Type;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
+import android.renderscript.Type;
 import android.util.Log;
 
 public class YuvConverter

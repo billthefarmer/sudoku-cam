@@ -52,29 +52,28 @@ public class CameraActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.camera);
 
         // Create our Preview view and set it as the content of our
         // activity.
         preview = new CameraPreview(this);
-        FrameLayout layout = (FrameLayout) findViewById(R.id.camera_preview);
-        layout.addView(preview);
+        setContentView(preview);
 
 	view = new PuzzleView(this);
-	layout.addView(view);
+        FrameLayout.LayoutParams params = new
+	    FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                     ViewGroup.LayoutParams.MATCH_PARENT);
+	addContentView(view, params);
 
         Button button = new Button(this);
-	layout.addView(button);
-        FrameLayout.LayoutParams params =
-	    (FrameLayout.LayoutParams) button.getLayoutParams();
-	params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-	params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params = new
+	    FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                     ViewGroup.LayoutParams.WRAP_CONTENT);
 	params.bottomMargin = 128;
 	params.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-        button.setLayoutParams(params);
 
 	button.setBackgroundResource(R.drawable.colour_button);
         button.setOnClickListener(this);
+	addContentView(button, params);
 
 	thread = new LooperThread(view);
     }
@@ -110,7 +109,7 @@ public class CameraActivity extends Activity
 
 	catch (Exception e)
 	{
-	    // Ignore, hread already running
+	    // Ignore, thread already running
 	}
     }
 
@@ -152,7 +151,7 @@ public class CameraActivity extends Activity
     {
 	// get an image from the camera
 	camera.takePicture(null, null, this);
-	camera.startPreview();
+	// camera.startPreview();
     }
 
     @Override

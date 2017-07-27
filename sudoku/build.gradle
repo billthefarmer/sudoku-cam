@@ -1,0 +1,25 @@
+
+apply plugin: 'com.android.library'
+
+group='com.github.billthefarmer'
+
+android {
+    compileSdkVersion 'android-22'
+    buildToolsVersion '25.0.2'
+
+    externalNativeBuild {
+        ndkBuild {
+	    path 'src/main/jni/Android.mk'
+	}
+    }
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22
+    }
+
+    lintOptions {
+    	disable 'OldTargetApi'
+	abortOnError false
+    }
+}
